@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .list {
+            width: 240px;
+        }
+
+        .list img {
+            width: 100%;
+        }
+
+        #main {
+            width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .title-left img {
+            vertical-align: middle;
+            width: 22px;
+            height: 22px;
+            border-radius: 100%;
+            margin-right: 5px;
+        }
+
+        .title {
+            padding: 10px 10px 13px;
+        }
+
+        .title-text {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .title-right img {
+            margin-right: 10px;
+            width: 15px;
+            vertical-align: middle;
+        }
+
+        .title-user {
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .floor {
+            margin-top: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div class="list"></div>
+        <div class="list"></div>
+        <div class="list"></div>
+        <div class="list"></div>
+    </div>
+    <div class="floor">加载完了.....</div>
+    <script>
+        var list = document.querySelectorAll('.list');
+        for (let i = 0; i < list.length; i++) {
+            fetch('http://localhost:3000/note?tab=' + i * 30).then(response => {
+                return response.json()
+            }).then(res => {
+                res.data.forEach((item, index, all) => {
+                    list[i].innerHTML += `
+                    <div class="box">
+                        <img data-lazy-src="${item.img_src}"  alt="">
+                        <div class="title">
+                            <div class="title-text">${item.title}</div>
+                            <div class="title-user">
+                                <div class="title-left"><img data-lazy-src="${item.user_img}"  alt="">${item.user}</div>
+                                <div class="title-right">${item.flag ? '<img class="love" data-id=' + item.id + ' data-i=' + item.love + ' data-lazy-src="https://cp1.douguo.com/static/nweb/images/liked.png?v=9"alt=""><span class="txt">' + item.love + '</span>' : '<img class="love" data-id=' + item.id + ' data-i=' + item.love + ' data-lazy-src="https://cp1.douguo.com/static/nweb/images/like2.png?v=9"alt=""><span class="txt">' + item.love + '</span>'}</div>
+                            </div>
+                        </div>
+                    </div>
+                    `
+                });
+            })
+        }
+    </script>
+    <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+    <script src="EasyLazyload.min.js"></script>
+
+    <script>
+        var love = document.querySelectorAll('.love');
+        var span = document.querySelectorAll('.txt');
+        window.onload = function () {
+            var main = document.getElementById('main');
+            lazyLoadInit({
+                coverColor: "white",
+                coverDiv: "",
+                offsetBottom: 0,
+                offsetTopm: 0,
+                showTime: 50,
+                onLoadBackEnd: function (i, e) { },
+                onLoadBackStart: function (i, e) { }
+            });
+        }
+        for (let i = 0; i < love.length; i++) {
+            love[i].onclick = function (e) {
+                fetch('http://localhost:3000/note?flag=' + e.target.dataset.id).then(response => {
+                    return response.json()
+                }).then(res => {
+                    var index = parseInt(res.data[0].love) + 1;
+                    var index1 = parseInt(res.data[0].love) - 1;
+                    if (res.data[0].flag) {
+                        this.setAttribute('src', 'https://cp1.douguo.com/static/nweb/images/like2.png?v=9')
+                        fetch('http://localhost:3000/note?id=' + e.target.dataset.id + '&i=' + index1 + '&k=' + 0 + '').then(response => {
+                            return response.json()
+                        }).then(res => {
+                            fetch('http://localhost:3000/note?flag=' + e.target.dataset.id).then(response => {
+                                return response.json();
+                            }).then(res => {
+                                span[i].innerHTML = res.data[0].love
+                            })
+                        })
+                    } else {
+                        this.setAttribute('src', 'https://cp1.douguo.com/static/nweb/images/liked.png?v=9');
+                        fetch('http://localhost:3000/note?id=' + e.target.dataset.id + '&i=' + index + '&k=' + 1 + '').then(response => {
+                            return response.json()
+                        }).then(res => {
+                            fetch('http://localhost:3000/note?flag=' + e.target.dataset.id).then(response => {
+                                return response.json();
+                            }).then(res => {
+                                span[i].innerHTML = res.data[0].love
+                            })
+                        })
+                    }
+                })
+            }
+        }
+    </script>
+</body>
+
+</html>
