@@ -71,6 +71,15 @@ app.get('/note', (req, res) => { //笔记接口
             res.json(obj);
         })
     }
-    
+})
+app.get('/note_detail', (req, res) => { //笔记详情接口
+        connection.query('select * from note where id='+req.query.id, function (err, data) {
+            if (err) throw err
+            const obj = {
+                status: 200,
+                data
+            }
+            res.json(obj);
+        })
 })
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

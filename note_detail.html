@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            color: #333;
+        }
+        .main {
+            width: 1000px;
+            margin: 0 auto;
+        }
+        .left{
+            width: 690px;
+        }
+        .banner {
+            width: 690px;
+            height: 390px;
+            background-position: center center;
+            background-size: contain;
+            background-color: #eee;
+            background-repeat: no-repeat;
+        }
+        h3{
+            font-size: 22px;
+            margin-top:30px ;
+        }
+        .user{
+            display: flex;
+            justify-content: space-between;
+        }
+        .user-left img{
+            width: 30px;
+            height: 30px;
+            border-radius: 100%;
+            vertical-align: middle;
+        }
+        .user_name{
+            font-size: 12px;
+        }
+        .focus{
+            vertical-align: middle;
+            display: inline-block;
+            width: 80px;
+            height: 30px;
+            box-sizing: border-box;
+            border: 1px solid #333;
+            border-radius: 4px;
+        }
+        .love,.collect{
+            vertical-align: middle;
+            display: inline-block;
+            width: 80px;
+            height: 34px;
+            box-sizing: border-box;
+            border: 1px solid #ffb31a;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <div class="left">
+            
+        </div>
+    </div>
+    <script>
+        var box = document.querySelector('.left');
+        fetch('http://localhost:3000/note_detail?id='+window.location.search.split('=')[1]).then(response=>{
+            return response.json()
+        }).then(res=>{
+            box.innerHTML=`
+            <div class="banner" style="background-image: url('${res.data[0].img_src}');"></div>
+            <h3>${res.data[0].title}</h3>
+            <div class="user">
+                <div class="user-left">
+                    <img src="${res.data[0].user_img}" alt="">
+                    <span class="user_name">${res.data[0].user}</span>
+                    <span class="focus"></span>
+                </div>
+                <div class="user-right">
+                    <span class="love"></span>
+                    <span class="collect"></span>
+                </div>
+            </div>
+            `
+        })
+    </script>
+</body>
+
+</html>
