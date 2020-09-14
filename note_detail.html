@@ -113,10 +113,11 @@
             margin: 0;
         }
 
-        .love {
+        .love,.collect img {
             width: 15px;
             height: 14px;
             vertical-align: middle;
+            cursor: pointer;
         }
 
         .txt {
@@ -131,6 +132,22 @@
         a {
             color: #333;
             text-decoration: none;
+        }
+        .focus{
+            display: inline-block;
+            line-height: 26px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .focus span:first-child{
+            vertical-align: 1px;
+        }
+        .collect{
+            background-color: #ffd31a;
+            color: #fff;
+            font-size: 12px;
+            line-height: 30px;
+            vertical-align: middle;
         }
     </style>
 </head>
@@ -197,11 +214,11 @@
                 <div class="user-left">
                     <img src="${res.data[0].user_img}" alt="">
                     <span class="user_name">${res.data[0].user}</span>
-                    <span class="focus"></span>
+                    <p class="focus"><span>+</span> <span>关注</span></p>
                 </div>
                 <div class="user-right">
                     <span class="praise">${res.data[0].flag ? '<img class="love" data-change="1" data-id=' + res.data[0].id + ' src="https://cp1.douguo.com/static/nweb/images/liked.png?v=9" alt="">' : '<img class="love" data-change="1" data-id=' + res.data[0].id + ' src="https://cp1.douguo.com/static/nweb/images/ylike.png?v=7" alt="">'}<span class="txt">${res.data[0].love}</span></span>
-                    <span class="collect"></span>
+                    <span class="collect"><img src="https://cp1.douguo.com/static/nweb/images/star1.png?1" alt=""> 收藏</span>
                 </div>
             </div>
             `

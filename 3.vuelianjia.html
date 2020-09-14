@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+    <style>
+        html {
+            font-size: 13.333333vw;
+        }
+
+        body {
+            font-size: 0.28rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul,
+        ol {
+            list-style: none;
+        }
+
+        .title {
+            font-weight: 600;
+            line-height: 44px;
+            text-align: center;
+            display: flex;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .title>li {
+            width: 25%;
+        }
+
+        .area>li {
+            padding-left: 16px;
+            line-height: 40px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .price>li {
+            line-height: 50px;
+            padding-left: 20px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .active {
+            color: #00ae66 !important;
+        }
+
+        .house>label {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            line-height: 40px;
+        }
+
+        .house>label input {
+            margin-top: 13px;
+        }
+
+        h5 {
+            margin: 20px 0 10px 20px;
+        }
+
+        .direction {
+            margin: 20px 0 10px 20px;
+            font-size: 0;
+        }
+
+        .direction li {
+            font-size: 0.28rem;
+            box-sizing: border-box;
+            width: 22.5%;
+            margin-right: 2.5%;
+            margin-bottom: 2.5%;
+            display: inline-block;
+            line-height: 25px;
+            text-align: center;
+            border: 1px solid #e5e5e5;
+            color: #999;
+        }
+
+        .arrows {
+            display: inline-block;
+            width: 11px;
+            height: 11px;
+            background: url(https://s1.ljcdn.com/hulk-web/static/m/statics/images/common/sprite.svg?version=fff7459eb2) no-repeat;
+            background-position: -9px -29px;
+            background-size: 32px 425px;
+        }
+
+        .arrows1 {
+            display: inline-block;
+            width: 11px;
+            height: 11px;
+            background: url(https://s1.ljcdn.com/hulk-web/static/m/statics/images/common/sprite.svg?version=fff7459eb2) no-repeat;
+            background-position: -10px -44px;
+            background-size: 32px 425px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <ul class="title">
+            <li v-for="(item,index) in title" :key="index" :class="{active:show==index+1}" @click="fn(index)">{{item}}
+                <span class="arrows" :class="{arrows1:show==index+1}"></span>
+            </li>
+        </ul>
+        <div class="main">
+            <div class="content" v-show="show=='1'">
+                <ul class="area">
+                    <li v-for="(item,index) in area" :class="{active:show_a===index+1}" :key="index"
+                        @click="tab(index,item)">{{item}}</li>
+                </ul>
+            </div>
+            <div class="content" v-show="show=='2'">
+                <ul class="price">
+                    <li v-for="(item,index) in price" :key="index" :class="{active:show_b==index+1}"
+                        @click="tab1(index,item)">{{item}}</li>
+                </ul>
+            </div>
+            <div class="content house" v-show="show=='3'">
+                <label v-for="(item,index) in house" :key="index" :class="{active:show_c==index+1}"
+                    @click="tab2(index,item)">{{item}}<input type="radio" name="house"></label>
+            </div>
+            <div class="content" v-show="show=='4'">
+                <h5>朝向</h5>
+                <ul class="direction">
+                    <li v-for="(item,index) in direction" :key="index" :class="{active:show_d==index+1}"
+                        @click="tab3(index,item)">{{item}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                title: ['区域', '价格', '房型', '更多'],
+                area: ["不限", "二七", "郑东新区", "荥阳市", "新郑市", "上街区", "巩义市", "新密市", "登封市", "中牟县", "高新", "航空港区", "中原"],
+                price: ['60万以下', '60-80万', '80-100万', '100-150万', '150-200万', '200-300万', '300-400万', '400万以上'],
+                house: ['一室', '二室', '三室', '四室', '五室', '五室以上'],
+                direction: ['南北', '朝南', '朝东', '朝北', '朝西'],
+                show: '',
+                show_a: '',
+                show_b: '',
+                show_c: '',
+                show_d: '',
+                show_e: '',
+            },
+            methods: {
+                fn(index) {
+                    if (this.show == index + 1) {
+                        this.show = '';
+                    } else {
+                        this.show = index + 1;
+                    }
+                },
+                tab(index, item) {
+                    this.show_a = index + 1;
+                    this.title[this.show - 1] = item;
+                    setTimeout(() => {
+                        this.show = '';
+                    }, 300);
+
+                },
+                tab1(index, item) {
+                    this.show_b = index + 1;
+                    this.title[this.show - 1] = item;
+                    setTimeout(() => {
+                        this.show = '';
+                    }, 300);
+                },
+                tab2(index, item) {
+                    this.show_c = index + 1;
+                    this.title[this.show - 1] = item;
+                    setTimeout(() => {
+                        this.show = '';
+                    }, 300);
+                },
+                tab3(index, item) {
+                    this.show_d = index + 1;
+                    this.title[this.show - 1] = item;
+                    setTimeout(() => {
+                        this.show = '';
+                    }, 300);
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
