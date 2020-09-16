@@ -17,8 +17,75 @@ var connection = mysql.createConnection({
     database: 'douguo'
 })
 connection.connect()
+const bodyParser=require("body-parser");
 
+// 解析以 application/json 和 application/x-www-form-urlencoded 提交的数据
+var jsonQuery = bodyParser.json();
+var urlQuery = bodyParser.urlencoded({ extended: false });
 
+app.post('/login',urlQuery,(req,res)=>{//注册登陆接口
+    if(req.body.status=='in'){//注册
+        var phones;
+        var names;
+        if(req.body.phone!=undefined){
+            connection.query('select * from userinfo where phone='+req.body.phone, function (err, data) {
+                const obj = {
+                    status: 200,
+                    data
+                }
+                if(obj.data!=''){
+                    if(req.body.phone==obj.data[0].phone){
+                        res.json('账号已注册')
+                    }
+                }else{
+                    phones='';
+                }
+            })
+        }
+        if(req.body.name!=undefined){
+            connection.query(`select * from userinfo where username='${req.body.name}'`, function (err, data) {
+                if (err) throw err
+                const obj = {
+                    status: 200,
+                    data
+                }
+                if(obj.data!=''){
+                    if(req.body.name==obj.data[0].username){
+                        res.json('昵称已存在')
+                    }
+                }else{
+                    names='';
+                }
+            })
+        }
+        if(req.body.phone!=phones&&req.body.name!=names){
+            connection.query("insert into userinfo (username,password,phone) values ('"+req.body.name+"','"+req.body.psw+"','"+req.body.phone+"');", function (err, data) {
+                if(err){
+                    res.json('失败')
+                }else{
+                    res.json('注册成功')
+                }
+            }) 
+        }
+        
+    }
+    if(req.body.status=='up'){//登陆
+        if(req.body.name!=undefined){
+            connection.query('select * from userinfo where phone='+req.body.name, function (err, data) {
+                const obj = {
+                    status: 200,
+                    data
+                }
+                if(obj.data!=''){
+                    if(req.body.name==obj.data[0].phone&&req.body.psw==obj.data[0].password)
+                    res.json('登陆成功')
+                }else{
+                    res.json('账号不存在')
+                }
+            })
+        }
+    }
+})
 
 
 app.get('/anime', (req, res) => { //动漫接口
