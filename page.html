@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.12/vue.min.js"></script>
+    <style>
+        .active {
+            background-color: #ffb400;
+        }
+
+        #app span {
+            display: inline-block;
+            padding: 2px 5px;
+        }
+
+        .page {
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <span @click="fn">首页</span>
+        <span v-if="status>0" @click="up">上一页</span>
+        <page v-bind:num="status" v-on:page="getdata" v-on:status="setdata"></page>
+        <span @click="down">下一页</span>
+        <span @click="fn1()">末页</span>
+    </div>
+    <script>
+        Vue.component('page', {
+            data(){
+                return {
+                    page: [1, 2, 3, 4],
+                    status: 0
+                }
+            },
+            props:['num'],
+            methods:{
+                fn(index) {
+                    console.log(index);
+                    this.status = index;
+                    this.$emit('page',this.page);
+                    this.$emit('status',this.status);
+                    if (index == 0) {
+                        this.page.splice(4, this.page.length - 1);
+                    }
+                    if (index == 1) {
+                        this.page.splice(4, this.page.length - 1);
+                        this.page.push('5');
+                    }
+                    if (index == 2) {
+                        this.page.splice(4, this.page.length - 1);
+                        this.page.push('5','6');
+                    }
+                    if (index == 3) {
+                        this.page.splice(4, this.page.length - 1);
+                        this.page.push('5','6','7');
+                    }
+                }
+            },
+            template: `
+            <div class="page">
+                <span v-for="(item,index) in page" :key="index" @click="fn(index)" :class="{active:num==index}">{{item}}</span>
+            </div>
+            `,
+            watch:{
+                num(){
+                    console.log(this.num);
+                    if (this.num == 0) {
+                        this.page.splice(4, this.page.length - 1);
+                    }
+                    if (this.num == 1) {
+                        this.page.splice(4, this.page.length - 1);
+                        this.page.push('5');
+                    }
+                    if (this.num == 2) {
+                        this.page.splice(4, this.page.length - 1);
+                        this.page.push('5','6');
+                    }
+                    if (this.num == 3) {
+                        this.page.splice(4, this.page.length - 1);
+                        this.page.push('5','6','7');
+                    }
+                    if(this.num==6){
+                        this.page.splice(4, this.page.length - 1);
+                        this.page.push('5','6','7');
+                    }
+                }
+            }
+
+        })
+        new Vue({
+            el: '#app',
+            data: {
+                page: [],
+                status: 0
+            },
+            methods: {
+                getdata(data){
+                    this.page=data
+                },
+                setdata(data){
+                    this.status=data
+                },
+                fn(){
+                    this.status='0'
+                },
+                up(){
+                    if(this.status>0){
+                        this.status=this.status-1
+                    }
+                },
+                down(){
+                    if(this.status<6){
+                        this.status=this.status+1
+                    }
+                },
+                fn1(){
+                    this.status='6'
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
