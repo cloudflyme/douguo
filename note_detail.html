@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="vue.min.js"></script>
     <style>
         body {
             color: #333;
@@ -36,6 +37,7 @@
         }
 
         .user {
+            align-items: center;
             display: flex;
             justify-content: space-between;
         }
@@ -149,6 +151,43 @@
             line-height: 30px;
             vertical-align: middle;
         }
+        #app{
+            width: 1000px;
+            margin: 0 auto;
+        }
+        .comment{
+            display: flex;
+            align-items: center;
+            height: 90px;
+        }
+        .ipt{
+            width: 700px;
+            height: 75px;
+            resize: none;
+            padding-top: 10px;
+            padding-left: 10px;
+            background: none;
+            outline: 0;
+        }
+        .btn{
+            margin-left: 10px;
+            background-color: #ccc;
+            color: #eee;
+            width: 90px;
+            height: 40px;
+            border: 0;
+        }
+        .btn1{
+            background-color: #ffb400;
+            color: #fff;
+        }
+        .text{
+            width: 700px;
+            text-align: center;
+        }
+        .footer-item{
+            height: ;
+        }
     </style>
 </head>
 
@@ -159,12 +198,84 @@
         </div>
         <div id="right">
             <h3>相关笔记</h3>
-            <div id="banner">
-
-            </div>
+            <div id="banner"></div>
         </div>
     </div>
+    <div id="app">
+        <h4>评论</h4>
+        <my-ipt></my-ipt>
+        <my-list></my-list>
+    </div>
     <script>
+        const bus = new Vue();
+        Vue.component('my-ipt', {
+            data(){
+                return {
+                    msg:''
+                }
+            },
+            template: `
+                <div class="comment">
+                    <textarea type="text" class="ipt"  v-model.trim="msg"></textarea>   
+                    <button class="btn"  disabled v-if="msg==''">发布</button>
+                    <button class="btn btn1" @click="send()" v-else>发布</button>
+                </div>
+            `,
+            methods: {
+                send(){
+                    bus.$emit('send-data',this.msg)
+                }
+            },
+        })
+        Vue.component('my-list', {
+            data() {
+                return {
+                    arr:[]
+                }
+            },
+            template:`
+                <div>
+                    <ul v-if="arr.length">
+                        <li v-for="(item,index) in arr" :key="index" class="footer-item">
+                            {{item.title}}
+                            <my-good @send-num="getdata" :index="index" :good="item.good"></my-good>
+                            <button @click="remove(index)">删除</button>
+                        </li>    
+                    </ul>
+                    <h4 class="text" v-else>暂无数据</h4>
+                </div>
+                
+            `,
+            mounted() {
+                const that=this;
+                bus.$on('send-data',(data)=>{
+                    that.arr.push({title:data,good:0})
+                })
+            },  
+            methods:{
+                getdata(data,index){
+                    this.arr[index].good=data
+                },
+                remove(i){
+                    this.arr.splice(i,1)
+                }
+            }
+        })
+        Vue.component('my-good',{
+            props:['index','good'],
+            template:`
+                <button @click="send">{{good}}</button>
+            `,
+            methods:{
+                send(){
+                    this.good++;
+                    this.$emit('send-num',this.good,this.index)
+                }
+            }
+        })
+        new Vue({
+            el: "#app",
+        })
         var box = document.querySelector('#left');
         var banner = document.getElementById('banner');
         var arr = [];

@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="lazy.min.js"></script>
     <title>Document</title>
     <style>
         .list {
@@ -80,13 +81,13 @@
                     list[i].innerHTML += `
                     <div class="box">
                         <a href="note_detail.html?id=${item.id}">
-                        <img data-lazy-src="${item.img_src}"  alt="">
+                        <img class="lazyload" data-src="${item.img_src}"  alt="">
                         </a>
                         <div class="title">
                             <div class="title-text">${item.title}</div>
                             <div class="title-user">
-                                <div class="title-left"><img data-lazy-src="${item.user_img}"  alt="">${item.user}</div>
-                                <div class="title-right">${item.flag ? '<img class="love" data-id=' + item.id + ' data-i=' + item.love + ' data-lazy-src="https://cp1.douguo.com/static/nweb/images/liked.png?v=9"alt=""><span class="txt">' + item.love + '</span>' : '<img class="love" data-id=' + item.id + ' data-i=' + item.love + ' data-lazy-src="https://cp1.douguo.com/static/nweb/images/like2.png?v=9"alt=""><span class="txt">' + item.love + '</span>'}</div>
+                                <div class="title-left"><img class="lazyload" data-src="${item.user_img}"  alt="">${item.user}</div>
+                                <div class="title-right">${item.flag ? '<img  class="love lazyload" data-id=' + item.id + ' data-i=' + item.love + ' data-src="https://cp1.douguo.com/static/nweb/images/liked.png?v=9"alt=""><span class="txt">' + item.love + '</span>' : '<img class="love lazyload"  data-id=' + item.id + ' data-i=' + item.love + ' data-src="https://cp1.douguo.com/static/nweb/images/like2.png?v=9"alt=""><span class="txt">' + item.love + '</span>'}</div>
                             </div>
                         </div>
                     </div>
@@ -95,24 +96,22 @@
             })
         }
     </script>
-    <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
-    <script src="EasyLazyload.min.js"></script>
 
     <script>
         var love = document.querySelectorAll('.love');
         var span = document.querySelectorAll('.txt');
-        window.onload = function () {
-            var main = document.getElementById('main');
-            lazyLoadInit({
-                coverColor: "white",
-                coverDiv: "",
-                offsetBottom: 0,
-                offsetTopm: 0,
-                showTime: 50,
-                onLoadBackEnd: function (i, e) {},
-                onLoadBackStart: function (i, e) {}
-            });
-        }
+        // window.onload = function () {
+        //     var main = document.getElementById('main');
+        //     lazyLoadInit({
+        //         coverColor: "white",
+        //         coverDiv: "",
+        //         offsetBottom: 0,
+        //         offsetTopm: 0,
+        //         showTime: 50,
+        //         onLoadBackEnd: function (i, e) {},
+        //         onLoadBackStart: function (i, e) {}
+        //     });
+        // }
         for (let i = 0; i < love.length; i++) {
             love[i].onclick = function (e) {
                 fetch('http://localhost:3000/note?flag=' + e.target.dataset.id).then(response => {
