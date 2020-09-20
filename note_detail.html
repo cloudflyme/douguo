@@ -5,8 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="vue.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.12/vue.min.js"></script>
     <style>
+        ul,li{
+            margin: 0;
+            padding: 0;
+        }
         body {
             color: #333;
         }
@@ -186,7 +190,21 @@
             text-align: center;
         }
         .footer-item{
-            height: ;
+            display: flex;
+            justify-content: space-between;
+            list-style-type: none;
+            height: 60px;
+            line-height: 60px;
+        }
+        .del ,.good{
+            width: 50px;
+            height: 25px;
+        }
+        .comment1{
+            width: 700px;
+        }
+        .footer-location a:hover{
+            color: #ffb31a;
         }
     </style>
 </head>
@@ -205,6 +223,9 @@
         <h4>评论</h4>
         <my-ipt></my-ipt>
         <my-list></my-list>
+        <div class="footer-location">
+            你的当前位置：<a href="">豆果美食</a>><a href="">笔记</a>><span class="location-title"></span>
+        </div>
     </div>
     <script>
         const bus = new Vue();
@@ -234,12 +255,14 @@
                 }
             },
             template:`
-                <div>
+                <div class="comment1">
                     <ul v-if="arr.length">
                         <li v-for="(item,index) in arr" :key="index" class="footer-item">
                             {{item.title}}
-                            <my-good @send-num="getdata" :index="index" :good="item.good"></my-good>
-                            <button @click="remove(index)">删除</button>
+                            <div>
+                                <my-good @send-num="getdata" :index="index" :good="item.good"></my-good>
+                                <button @click="remove(index)" class="del">删除</button>
+                            </div>
                         </li>    
                     </ul>
                     <h4 class="text" v-else>暂无数据</h4>
@@ -264,7 +287,7 @@
         Vue.component('my-good',{
             props:['index','good'],
             template:`
-                <button @click="send">{{good}}</button>
+                <button @click="send" class="good">{{good}}</button>
             `,
             methods:{
                 send(){
@@ -278,6 +301,7 @@
         })
         var box = document.querySelector('#left');
         var banner = document.getElementById('banner');
+        var title= document.querySelector('.location-title')
         var arr = [];
         for (var a = 0; a < 5;) {//生成五个随机数
             var index = Math.ceil(Math.random() * 125);
@@ -304,7 +328,7 @@
                                     <p>${res.data[0].title}</p>
                                 <a/>
                                 <div class="like">
-                                    ${res.data[0].flag ? '<img class="love" data-change="0" data-id=' + res.data[0].id + ' src="https://cp1.douguo.com/static/nweb/images/liked.png?v=9" alt="">' : '<img class="love" data-change="0" data-id=' + res.data[0].id + ' src="https://cp1.douguo.com/static/nweb/images/like2.png?v=9" alt="">'}
+                                    ${res.data[0].flag==1 ? '<img class="love" data-change="0" data-id=' + res.data[0].id + ' src="https://cp1.douguo.com/static/nweb/images/liked.png?v=9" alt="">' : '<img class="love" data-change="0" data-id=' + res.data[0].id + ' src="https://cp1.douguo.com/static/nweb/images/like2.png?v=9" alt="">'}
                                     <span class="txt">${res.data[0].love}</span>
                                 </div>
                             </div>
@@ -332,7 +356,8 @@
                     <span class="collect"><img src="https://cp1.douguo.com/static/nweb/images/star1.png?1" alt=""> 收藏</span>
                 </div>
             </div>
-            `
+            `;
+            title.innerHTML=''+res.data[0].title+''
         })
         setTimeout(() => {//点赞功能
             var love = document.getElementsByClassName('love');
@@ -344,7 +369,7 @@
                     }).then(res => {
                         var index = parseInt(res.data[0].love) + 1;
                         var index1 = parseInt(res.data[0].love) - 1;
-                        if (res.data[0].flag) {
+                        if (res.data[0].flag==1) {
                             this.setAttribute('src', parseInt(e.target.dataset.change) ? 'https://cp1.douguo.com/static/nweb/images/ylike.png?v=7' : 'https://cp1.douguo.com/static/nweb/images/like2.png?v=9')
                             fetch('http://localhost:3000/note?id=' + e.target.dataset.id + '&i=' + index1 +
                                 '&k=' + 0 + '').then(response => {

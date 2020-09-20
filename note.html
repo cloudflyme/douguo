@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="lazy.min.js"></script>
     <title>Document</title>
     <style>
         .list {
@@ -61,6 +60,7 @@
             border-top-left-radius: 8px;
         }
     </style>
+    <script src="lazy.min.js"></script>
 </head>
 
 <body>
@@ -87,7 +87,7 @@
                             <div class="title-text">${item.title}</div>
                             <div class="title-user">
                                 <div class="title-left"><img class="lazyload" data-src="${item.user_img}"  alt="">${item.user}</div>
-                                <div class="title-right">${item.flag ? '<img  class="love lazyload" data-id=' + item.id + ' data-i=' + item.love + ' data-src="https://cp1.douguo.com/static/nweb/images/liked.png?v=9"alt=""><span class="txt">' + item.love + '</span>' : '<img class="love lazyload"  data-id=' + item.id + ' data-i=' + item.love + ' data-src="https://cp1.douguo.com/static/nweb/images/like2.png?v=9"alt=""><span class="txt">' + item.love + '</span>'}</div>
+                                <div class="title-right">${item.flag==1 ? '<img class="love lazyload" data-id=' + item.id + '  data-src="https://cp1.douguo.com/static/nweb/images/liked.png?v=9"alt=""><span class="txt">' + item.love + '</span>' : '<img class="love lazyload" data-id=' + item.id + ' data-src="https://cp1.douguo.com/static/nweb/images/like2.png?v=9"alt=""><span class="txt">' + item.love + '</span>'}</div>
                             </div>
                         </div>
                     </div>
@@ -95,60 +95,48 @@
                 });
             })
         }
-    </script>
-
-    <script>
-        var love = document.querySelectorAll('.love');
-        var span = document.querySelectorAll('.txt');
-        // window.onload = function () {
-        //     var main = document.getElementById('main');
-        //     lazyLoadInit({
-        //         coverColor: "white",
-        //         coverDiv: "",
-        //         offsetBottom: 0,
-        //         offsetTopm: 0,
-        //         showTime: 50,
-        //         onLoadBackEnd: function (i, e) {},
-        //         onLoadBackStart: function (i, e) {}
-        //     });
-        // }
-        for (let i = 0; i < love.length; i++) {
-            love[i].onclick = function (e) {
-                fetch('http://localhost:3000/note?flag=' + e.target.dataset.id).then(response => {
-                    return response.json()
-                }).then(res => {
-                    var index = parseInt(res.data[0].love) + 1;
-                    var index1 = parseInt(res.data[0].love) - 1;
-                    if (res.data[0].flag) {
-                        this.setAttribute('src', 'https://cp1.douguo.com/static/nweb/images/like2.png?v=9')
-                        fetch('http://localhost:3000/note?id=' + e.target.dataset.id + '&i=' + index1 +
-                            '&k=' + 0 + '').then(response => {
-                            return response.json()
-                        }).then(res => {
-                            fetch('http://localhost:3000/note?flag=' + e.target.dataset.id).then(
-                                response => {
-                                    return response.json();
+        setTimeout(() => {
+            var love = document.querySelectorAll('.love');
+            var span = document.querySelectorAll('.txt');
+            for (let i = 0; i < love.length; i++) {
+                love[i].onclick = function (e) {
+                    fetch('http://localhost:3000/note?flag=' + e.target.dataset.id).then(response => {
+                        return response.json()
+                    }).then(res => {
+                        console.log(res.data[0].flag);
+                        var index = parseInt(res.data[0].love) + 1;
+                        var index1 = parseInt(res.data[0].love) - 1;
+                        if (res.data[0].flag==1) {
+                            this.setAttribute('src', 'https://cp1.douguo.com/static/nweb/images/like2.png?v=9')
+                            fetch('http://localhost:3000/note?id=' + e.target.dataset.id + '&i=' + index1 +
+                                '&k=' + 0 + '').then(response => {
+                                    return response.json()
                                 }).then(res => {
-                                span[i].innerHTML = res.data[0].love
-                            })
-                        })
-                    } else {
-                        this.setAttribute('src', 'https://cp1.douguo.com/static/nweb/images/liked.png?v=9');
-                        fetch('http://localhost:3000/note?id=' + e.target.dataset.id + '&i=' + index +
-                            '&k=' + 1 + '').then(response => {
-                            return response.json()
-                        }).then(res => {
-                            fetch('http://localhost:3000/note?flag=' + e.target.dataset.id).then(
-                                response => {
-                                    return response.json();
+                                    fetch('http://localhost:3000/note?flag=' + e.target.dataset.id).then(
+                                        response => {
+                                            return response.json();
+                                        }).then(res => {
+                                            span[i].innerHTML = res.data[0].love
+                                        })
+                                })
+                        } else {
+                            this.setAttribute('src', 'https://cp1.douguo.com/static/nweb/images/liked.png?v=9');
+                            fetch('http://localhost:3000/note?id=' + e.target.dataset.id + '&i=' + index +
+                                '&k=' + 1 + '').then(response => {
+                                    return response.json()
                                 }).then(res => {
-                                span[i].innerHTML = res.data[0].love
-                            })
-                        })
-                    }
-                })
+                                    fetch('http://localhost:3000/note?flag=' + e.target.dataset.id).then(
+                                        response => {
+                                            return response.json();
+                                        }).then(res => {
+                                            span[i].innerHTML = res.data[0].love
+                                        })
+                                })
+                        }
+                    })
+                }
             }
-        }
+        }, 500);
     </script>
 </body>
 
